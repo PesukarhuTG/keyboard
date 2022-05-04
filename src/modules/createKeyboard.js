@@ -4,13 +4,20 @@ import Key from './Key.js';
 
 const createMainText = () => {
   const mainText = document.createElement('div');
-  mainText.innerHTML = `
-      <h1>RSS Virtual Keyboard</h1>
-      <p>Virtual keyboard has been made under Window.<br>
-      Use left <kbd>Ctrl</kbd> + <kbd>Alt</kbd> to switch language
-      </p>
-      <textarea class="textarea" name="textarea" id="textarea"></textarea>
-  `;
+
+  const mainHeadling = document.createElement('h1');
+  mainHeadling.textContent = 'RSS Virtual Keyboard';
+
+  const p = document.createElement('p');
+  p.innerHTML = `Virtual keyboard has been made under Window.<br>
+  Use left <kbd>Ctrl</kbd> + <kbd>Alt</kbd> to switch language`;
+
+  const textareaOutput = document.createElement('textarea');
+  textareaOutput.classList.add('textarea');
+  textareaOutput.setAttribute('placeholder', 'Write something...');
+  textareaOutput.setAttribute('autocorrect', 'off');
+
+  mainText.append(mainHeadling, p, textareaOutput);
   return mainText;
 };
 
@@ -33,9 +40,24 @@ class Keyboard {
     keysContainer.appendChild(this.generateButtons());
 
     //Add to DOM
-    document.body.prepend(createMainText());
+    const mainTextDescription = createMainText();
+    document.body.prepend(mainTextDescription);
     main.appendChild(keysContainer);
     document.body.append(main);
+
+    //Add event listener and show symbols
+    const textareaInput = mainTextDescription.querySelector('.textarea');
+
+    keysContainer.addEventListener('click', e => {
+      let target = e.target.closest('.keyboard-key');
+      if (target) {
+        if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
+          target.dataset.value.match(/[- + = \\ . /]/)) &&
+          target.dataset.value.length === 1) {
+          textareaInput.value += target.dataset.value;
+        }
+      }
+    })
   }
 
   generateButtons() {

@@ -29,9 +29,10 @@ class Key {
 
     //если значение кнопки существует (основное)
     if (this.small) {
+      keyElement.dataset.value = this.small;
       const mainSymbol = document.createElement('div');
       mainSymbol.classList.add('text');
-      mainSymbol.textContent = `${this.small}`;
+      mainSymbol.textContent = this.small;
       keyElement.appendChild(mainSymbol);
     }
 
