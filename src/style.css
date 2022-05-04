@@ -5,6 +5,7 @@
   --button-active-bgrnd: rgba(255,255,255,0.12);
   --button-dark-bgrnd: rgba(0,0,0,0.25);
   --button-color: #fff;
+  --subtitle-color: rgba(255,255,255,0.5);
   --element-static-color: rgba(0,0,0,0.4);
   --element-active-color: #06f7e4;
 }
@@ -18,9 +19,15 @@
 body {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 20px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 18px;
   color: var(--font-color);
+}
+
+.img {
+  width: auto;
+  height: 20px;
 }
 
 .textarea {
@@ -31,7 +38,7 @@ body {
 
 .keyboard {
   width: 100%;
-  padding: 15px 0;
+  padding: 15px 25px;
   background-color: var(--color-bgrnd);
   user-select: none;
   transition: 0.3s;
@@ -39,6 +46,13 @@ body {
   -moz-transition: 0.3s;
   -ms-transition: 0.3s;
   -o-transition: 0.3s;
+}
+
+.keyboard-row {
+  display: grid;
+  margin: 10px 0;
+  height: 50px;
+  gap: 10px;
 }
 
 .keyboard-keys {
@@ -50,13 +64,9 @@ body {
   position: relative;
   align-items: center;
   justify-content: center;
-  height: 45px;
-  width: 5%;
-  max-width: 90px;
-  margin: 3px;
-  padding: 0 5px;
   vertical-align: top;
   border-radius: 4px;
+  font-size: 14px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -69,17 +79,31 @@ body {
 }
 
 .keyboard-key-wide {
-  width: 8%;
-  max-width: 200px;
+  width: 80px;
+}
+
+.keyboard-key-middle-wide {
+  width: 120px;
+}
+
+.keyboard-key-shift-wide {
+  width: 172px;
 }
 
 .keyboard-key-extra-wide {
-  width: 100%;
-  max-width:443px;
+  width: 588px;
 }
 
 .keyboard-key-dark {
   background-color: var(--button-dark-bgrnd);
+}
+
+.subtitle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  color: var(--subtitle-color);
 }
 
 .keyboard-key-activatable::after {

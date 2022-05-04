@@ -8,7 +8,7 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  mode: 'production',
+  mode: 'development',
   devServer: {
     open: true,
     host: 'localhost',
@@ -25,6 +25,10 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       },
     ],
   },

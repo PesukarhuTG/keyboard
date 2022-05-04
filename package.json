@@ -4,7 +4,7 @@
   "description": "Task [here](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/virtual-keyboard/virtual-keyboard-en.md)",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack",
     "watch": "webpack --watch",
     "start": "webpack serve",
     "lint": "eslint ./src",
@@ -25,8 +25,10 @@
     "eslint": "^8.14.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
+    "url-loader": "^4.1.1",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
