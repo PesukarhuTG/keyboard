@@ -91,6 +91,11 @@ class Keyboard {
         if (target.dataset.value === 'Backspace') {
           this.changeCursorPosition(textareaInput, target.dataset.value);
         }
+
+        //нажатие на enter
+        if (target.dataset.value === 'Enter') {
+          this.changeCursorPosition(textareaInput, target.dataset.value);
+        }
       }
     })
   }
@@ -114,6 +119,15 @@ class Keyboard {
       cursorPos--;
       area.selectionStart = area.selectionEnd = cursorPos;
       area.focus();
+    }
+
+    if (command === 'Enter') {
+      const left = area.value.slice(0, cursorPos);
+      const right = area.value.slice(cursorPos);
+      area.value = `${left}\n${right}`;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+      cursorPos++;
     }
   }
 
