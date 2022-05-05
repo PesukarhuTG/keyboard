@@ -39,6 +39,8 @@ class Keyboard {
     keysContainer.classList.add('keyboard-keys');
     keysContainer.appendChild(this.generateButtons());
 
+    const keys = keysContainer.querySelectorAll('.keyboard-key');
+
     //Add to DOM
     const mainTextDescription = createMainText();
     document.body.prepend(mainTextDescription);
@@ -54,10 +56,47 @@ class Keyboard {
         if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
           target.dataset.value.match(/[- + = \\ . /]/)) &&
           target.dataset.value.length === 1) {
-          textareaInput.value += target.dataset.value;
+
+          if (this.isCapsLock) {
+            textareaInput.value += target.dataset.value.toUpperCase();
+          } else {
+            textareaInput.value += target.dataset.value;
+          }
+
+        }
+
+        if (target.dataset.value === 'CapsLock') {
+          if (this.isCapsLock) {
+            this.isCapsLock = false;
+          } else {
+            this.isCapsLock = true;
+          }
+
+          this.switchCapsLock(keys);
+          target.classList.toggle('keyboard-key-active');
         }
       }
     })
+  }
+
+  switchCapsLock(buttonsArr) {
+    if (this.isCapsLock === true) {
+      buttonsArr.forEach(btn => {
+        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
+          btn.dataset.value.length === 1) {
+          let buttonValue = btn.querySelector('.text');
+          buttonValue.textContent = buttonValue.textContent.toUpperCase();
+        }
+      })
+    } else {
+      buttonsArr.forEach(btn => {
+        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
+          btn.dataset.value.length === 1) {
+          let buttonValue = btn.querySelector('.text');
+          buttonValue.textContent = buttonValue.textContent.toLowerCase();
+        }
+      })
+    }
   }
 
   generateButtons() {
