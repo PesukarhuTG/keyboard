@@ -16,6 +16,7 @@ const createMainText = () => {
   textareaOutput.classList.add('textarea');
   textareaOutput.setAttribute('placeholder', 'Write something...');
   textareaOutput.setAttribute('autocorrect', 'off');
+  textareaOutput.setAttribute('spellcheck', false);
 
   mainText.append(mainHeadling, p, textareaOutput);
   return mainText;
@@ -53,18 +54,23 @@ class Keyboard {
     keysContainer.addEventListener('click', e => {
       let target = e.target.closest('.keyboard-key');
       if (target) {
+
+
+        //символьно-буквенный ввод
         if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
           target.dataset.value.match(/[- + = \\ . /]/)) &&
           target.dataset.value.length === 1) {
+
+          textareaInput.focus();
 
           if (this.isCapsLock) {
             textareaInput.value += target.dataset.value.toUpperCase();
           } else {
             textareaInput.value += target.dataset.value;
           }
-
         }
 
+        //нажатие на caps lock
         if (target.dataset.value === 'CapsLock') {
           if (this.isCapsLock) {
             this.isCapsLock = false;
@@ -75,8 +81,40 @@ class Keyboard {
           this.switchCapsLock(keys);
           target.classList.toggle('keyboard-key-active');
         }
+
+        //нажатие на delete
+        if (target.dataset.value === 'Delete') {
+          this.changeCursorPosition(textareaInput, target.dataset.value);
+        }
+
+        //нажатие на Backspace
+        if (target.dataset.value === 'Backspace') {
+          this.changeCursorPosition(textareaInput, target.dataset.value);
+        }
       }
     })
+  }
+
+  changeCursorPosition(area, command) {
+    let cursorPos = area.selectionStart;
+
+    if (command === 'Delete') {
+      const left = area.value.slice(0, cursorPos);
+      const right = area.value.slice(cursorPos + 1);
+      area.value = `${left}${right}`;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+      cursorPos++;
+    }
+
+    if (command === 'Backspace') {
+      const left = area.value.slice(0, cursorPos - 1);
+      const right = area.value.slice(cursorPos);
+      area.value = `${left}${right}`;
+      cursorPos--;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
   }
 
   switchCapsLock(buttonsArr) {
