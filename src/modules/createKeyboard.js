@@ -125,9 +125,9 @@ class Keyboard {
       const left = area.value.slice(0, cursorPos);
       const right = area.value.slice(cursorPos);
       area.value = `${left}\n${right}`;
+      cursorPos++;
       area.selectionStart = area.selectionEnd = cursorPos;
       area.focus();
-      cursorPos++;
     }
   }
 
