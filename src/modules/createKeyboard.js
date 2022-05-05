@@ -82,18 +82,9 @@ class Keyboard {
           target.classList.toggle('keyboard-key-active');
         }
 
-        //нажатие на delete
-        if (target.dataset.value === 'Delete') {
-          this.changeCursorPosition(textareaInput, target.dataset.value);
-        }
+        const regexp = /Delete|Backspace|Enter|ArrowLeft|ArrowUp|ArrowDown|ArrowRight|Tab/i;
 
-        //нажатие на Backspace
-        if (target.dataset.value === 'Backspace') {
-          this.changeCursorPosition(textareaInput, target.dataset.value);
-        }
-
-        //нажатие на enter
-        if (target.dataset.value === 'Enter') {
+        if (target.dataset.value.match(regexp)) {
           this.changeCursorPosition(textareaInput, target.dataset.value);
         }
       }
@@ -126,6 +117,51 @@ class Keyboard {
       const right = area.value.slice(cursorPos);
       area.value = `${left}\n${right}`;
       cursorPos++;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
+
+    if (command === 'Tab') {
+      const left = area.value.slice(0, cursorPos);
+      const right = area.value.slice(cursorPos);
+      area.value = `${left}\t${right}`;
+      cursorPos++;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
+
+    if (command === 'ArrowLeft') {
+      cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
+
+    if (command === 'ArrowRight') {
+      cursorPos++;
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
+
+    if (command === 'ArrowUp') {
+      const left = area.value.slice(0, cursorPos);
+
+      if (left.match(/(\n).*$(?!\1)/g)) {
+        const strFromLeft = left.match(/(\n).*$(?!\1)/g);
+        cursorPos -= strFromLeft[0].length;
+      }
+
+      area.selectionStart = area.selectionEnd = cursorPos;
+      area.focus();
+    }
+
+    if (command === 'ArrowDown') {
+      const right = area.value.slice(cursorPos);
+
+      if (right.match(/(\n).*$(?!\1)/g)) {
+        const strFromRight = right.match(/^.*(\n).*(?!\1)/);
+        cursorPos += strFromRight[0].length + 1;
+      }
+
       area.selectionStart = area.selectionEnd = cursorPos;
       area.focus();
     }
