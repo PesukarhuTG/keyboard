@@ -1,5 +1,5 @@
-import rusSymbols from './rusSymbols.js';
-//import engSymbols from './engSymbols.js';
+//import rusSymbols from './rusSymbols.js';
+import engSymbols from './engSymbols.js';
 import Key from './Key.js';
 
 const createMainText = () => {
@@ -30,7 +30,7 @@ class Keyboard {
 
   //firstPageLoad
   init() {
-    this.keyBase = rusSymbols;
+    this.keyBase = engSymbols;
     //Create main Elements
     const main = document.createElement('div');
     const keysContainer = document.createElement('div');
@@ -53,9 +53,8 @@ class Keyboard {
 
     keysContainer.addEventListener('click', e => {
       let target = e.target.closest('.keyboard-key');
+
       if (target) {
-
-
         //символьно-буквенный ввод
         if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
           target.dataset.value.match(/[- + = \\ . /]/)) &&
@@ -89,6 +88,8 @@ class Keyboard {
         }
       }
     })
+
+    this.getPushButton(textareaInput, keysContainer);
   }
 
   changeCursorPosition(area, command) {
@@ -215,6 +216,29 @@ class Keyboard {
     })
 
     return fragment;
+  }
+
+  // =======================================================================================================
+
+  getPushButton(area, buttonContainer) {
+    const buttons = buttonContainer.querySelectorAll('.keyboard-key');
+
+    const deleteActiveClass = () => {
+      buttons.forEach(btn => {
+        btn.classList.remove('keyboard-btn-active');
+      });
+    };
+
+    document.addEventListener('keydown', e => {
+      area.focus();
+
+      buttons.forEach(btn => {
+        if (btn.dataset.code === e.code) {
+          btn.classList.add('keyboard-btn-active');
+          setTimeout(deleteActiveClass, 500);
+        }
+      })
+    })
   }
 }
 

@@ -14,61 +14,61 @@ const rusSymbols = [
   {
     small: '1',
     shift: '!',
-    code: 'Num1',
+    code: 'Digit1',
     keycode: '49',
   },
   {
     small: '2',
     shift: '"',
-    code: 'Num2',
+    code: 'Digit2',
     keycode: '50',
   },
   {
     small: '3',
     shift: '№',
-    code: 'Num3',
+    code: 'Digit3',
     keycode: '51',
   },
   {
     small: '4',
     shift: ';',
-    code: 'Num4',
+    code: 'Digit4',
     keycode: '52',
   },
   {
     small: '5',
     shift: '%',
-    code: 'Num5',
+    code: 'Digit5',
     keycode: '53',
   },
   {
     small: '6',
     shift: ':',
-    code: 'Num6',
+    code: 'Digit6',
     keycode: '54',
   },
   {
     small: '7',
     shift: '?',
-    code: 'Num7',
+    code: 'Digit7',
     keycode: '55',
   },
   {
     small: '8',
     shift: '*',
-    code: 'Num8',
+    code: 'Digit8',
     keycode: '56',
   },
   {
     small: '9',
     shift: '(',
-    code: 'Num9',
+    code: 'Digit9',
     keycode: '57',
   },
   {
     small: '0',
     shift: ')',
-    code: 'Num0',
+    code: 'Digit0',
     keycode: '48',
   },
   {
@@ -332,7 +332,13 @@ const rusSymbols = [
   {
     small: 'Ctrl',
     shift: null,
-    code: 'CtrlLeft',
+    code: 'ControlLeft',
+    keycode: '17',
+  },
+  {
+    small: 'Ctrl',
+    shift: null,
+    code: 'ControlRight',
     keycode: '17',
   },
   {
@@ -352,12 +358,6 @@ const rusSymbols = [
     shift: null,
     code: 'AltRight',
     keycode: '225',
-  },
-  {
-    small: 'Ctrl',
-    shift: null,
-    code: 'CtrlRight',
-    keycode: '17',
   },
   {
     small: 'ArrowLeft',
@@ -386,7 +386,7 @@ const rusSymbols = [
   {
     small: 'Win',
     shift: null,
-    code: 'Win',
+    code: 'MetaLeft',
     keycode: '1000',
   },
 ];

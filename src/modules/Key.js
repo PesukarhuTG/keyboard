@@ -30,6 +30,7 @@ class Key {
     //если значение кнопки существует (основное)
     if (this.small) {
       keyElement.dataset.value = this.small;
+      keyElement.dataset.code = this.code;
       const mainSymbol = document.createElement('div');
       mainSymbol.classList.add('text');
       mainSymbol.textContent = this.small;
@@ -64,10 +65,10 @@ class Key {
       case 'ShiftRight':
         keyElement.classList.add('keyboard-key-shift-wide', 'keyboard-key-dark');
         break;
-      case 'CtrlLeft':
+      case 'ControlLeft':
         keyElement.classList.add('keyboard-key-wide', 'keyboard-key-dark');
         break;
-      case 'CtrlRight':
+      case 'ControlRight':
         keyElement.classList.add('keyboard-key-wide', 'keyboard-key-dark');
         break;
       case 'ArrowLeft':
@@ -86,7 +87,7 @@ class Key {
         keyElement.textContent = '';
         createImg(arrowBottom, keyElement);
         break;
-      case 'Win':
+      case 'MetaLeft':
         keyElement.classList.add('keyboard-key-wide', 'keyboard-key-dark');
         break;
       case 'AltLeft':

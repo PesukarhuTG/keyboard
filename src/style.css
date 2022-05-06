@@ -77,6 +77,11 @@ body {
   background-color: var(--button-static-bgrnd);
   outline: none;
   cursor: pointer;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
 }
 
 .keyboard-key-wide {
@@ -123,9 +128,13 @@ body {
 }
 
 .keyboard-key:active {
-  background-color: var(--button-active-bgrnd);
+  background-color: var(--element-active-color);
 }
 
 .keyboard-key-active::after {
+  background-color: var(--element-active-color);
+}
+
+.keyboard-btn-active {
   background-color: var(--element-active-color);
 }
