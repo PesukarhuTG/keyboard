@@ -59,91 +59,6 @@ class Keyboard {
     }
   }
 
-  changeCursorPosition(command) {
-    let cursorPos = this.textareaInput.selectionStart;
-
-    if (command === 'Delete') {
-      const left = this.textareaInput.value.slice(0, cursorPos);
-      const right = this.textareaInput.value.slice(cursorPos + 1);
-      this.textareaInput.value = `${left}${right}`;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-      cursorPos++;
-    }
-
-    if (command === 'Backspace') {
-      const left = this.textareaInput.value.slice(0, cursorPos - 1);
-      const right = this.textareaInput.value.slice(cursorPos);
-      this.textareaInput.value = `${left}${right}`;
-      cursorPos--;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'Space') {
-      const left = this.textareaInput.value.slice(0, cursorPos);
-      const right = this.textareaInput.value.slice(cursorPos);
-      this.textareaInput.value = `${left} ${right}`;
-      cursorPos++;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'Enter') {
-      const left = this.textareaInput.value.slice(0, cursorPos);
-      const right = this.textareaInput.value.slice(cursorPos);
-      this.textareaInput.value = `${left}\n${right}`;
-      cursorPos++;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'Tab') {
-      const left = this.textareaInput.value.slice(0, cursorPos);
-      const right = this.textareaInput.value.slice(cursorPos);
-      this.textareaInput.value = `${left}\t${right}`;
-      cursorPos++;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'ArrowLeft') {
-      cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'ArrowRight') {
-      cursorPos++;
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'ArrowUp') {
-      const left = this.textareaInput.value.slice(0, cursorPos);
-
-      if (left.match(/(\n).*$(?!\1)/g)) {
-        const strFromLeft = left.match(/(\n).*$(?!\1)/g);
-        cursorPos -= strFromLeft[0].length;
-      }
-
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-
-    if (command === 'ArrowDown') {
-      const right = this.textareaInput.value.slice(cursorPos);
-
-      if (right.match(/(\n).*$(?!\1)/g)) {
-        const strFromRight = right.match(/^.*(\n).*(?!\1)/);
-        cursorPos += strFromRight[0].length + 1;
-      }
-
-      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
-      this.textareaInput.focus();
-    }
-  }
-
   switchCapsLock() {
     const keys = this.keysContainer.querySelectorAll('.keyboard-key');
 
@@ -222,18 +137,22 @@ class Keyboard {
       const { dataset: { value } } = e.target.closest('.keyboard-key');
 
       if (target) {
-        if ((value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
-          value.match(/[- + `' < = \\ . , ; /]/) ||
-          value === '[' || value === ']') &&
-          value.length === 1) {
+        let cursorPos = this.textareaInput.selectionStart;
 
-          this.textareaInput.focus();
+        if ((value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) || value.match(/[- + `' < = \\ . , ; /]/) || value === ']' || value === '[') && value.length === 1) {
+
+          const left = this.textareaInput.value.slice(0, cursorPos);
+          const right = this.textareaInput.value.slice(cursorPos);
 
           if (this.isCapsLock === 'on') {
-            this.textareaInput.value += value.toUpperCase();
+            this.textareaInput.value = `${left}${value.toUpperCase()}${right}`;
           } else {
-            this.textareaInput.value += value;
+            this.textareaInput.value = `${left}${value.toLowerCase()}${right}`;
           }
+
+          cursorPos++;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
         }
 
         if (value === 'CapsLock') {
@@ -249,10 +168,85 @@ class Keyboard {
           target.classList.toggle('keyboard-key-active');
         }
 
-        const regexp = /Delete|Backspace|Enter|ArrowLeft|ArrowUp|ArrowDown|ArrowRight|Tab|Space|[a-zA-Zа-яА-Я0-9]/i;
+        if (value === 'Delete') {
+          const left = this.textareaInput.value.slice(0, cursorPos);
+          const right = this.textareaInput.value.slice(cursorPos + 1);
+          this.textareaInput.value = `${left}${right}`;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+          cursorPos++;
+        }
 
-        if (value.match(regexp)) {
-          this.changeCursorPosition(value);
+        if (value === 'Backspace') {
+          const left = this.textareaInput.value.slice(0, cursorPos - 1);
+          const right = this.textareaInput.value.slice(cursorPos);
+          this.textareaInput.value = `${left}${right}`;
+          cursorPos--;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'Space') {
+          const left = this.textareaInput.value.slice(0, cursorPos);
+          const right = this.textareaInput.value.slice(cursorPos);
+          this.textareaInput.value = `${left} ${right}`;
+          cursorPos++;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'Enter') {
+          const left = this.textareaInput.value.slice(0, cursorPos);
+          const right = this.textareaInput.value.slice(cursorPos);
+          this.textareaInput.value = `${left}\n${right}`;
+          cursorPos++;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'Tab') {
+          const left = this.textareaInput.value.slice(0, cursorPos);
+          const right = this.textareaInput.value.slice(cursorPos);
+          this.textareaInput.value = `${left}\t${right}`;
+          cursorPos++;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'ArrowLeft') {
+          cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'ArrowRight') {
+          cursorPos++;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'ArrowUp') {
+          const left = this.textareaInput.value.slice(0, cursorPos);
+
+          if (left.match(/(\n).*$(?!\1)/g)) {
+            const strFromLeft = left.match(/(\n).*$(?!\1)/g);
+            cursorPos -= strFromLeft[0].length;
+          }
+
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
+        }
+
+        if (value === 'ArrowDown') {
+          const right = this.textareaInput.value.slice(cursorPos);
+
+          if (right.match(/(\n).*$(?!\1)/g)) {
+            const strFromRight = right.match(/^.*(\n).*(?!\1)/);
+            cursorPos += strFromRight[0].length + 1;
+          }
+
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.focus();
         }
       }
     })
@@ -286,7 +280,14 @@ class Keyboard {
 
           if (e.code === 'Tab') {
             e.preventDefault();
-            this.changeCursorPosition(e.code);
+            let cursorPos = this.textareaInput.selectionStart;
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left}\t${right}`;
+            cursorPos++;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.focus();
+
           }
 
           if (e.code === 'CapsLock') {
