@@ -221,7 +221,7 @@ class Keyboard {
 
       if (target) {
         if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
-          target.dataset.value.match(/[- + = \\ . /]/)) &&
+          target.dataset.value.match(/[- + `' < = \\ . , ; /]/)) &&
           target.dataset.value.length === 1) {
 
           this.textareaInput.focus();
