@@ -28,151 +28,128 @@ class Keyboard {
       this.isShiftLeft = false
   }
 
-  //firstPageLoad
-  init(lang) {
+  init(lang, isCaps) {
     localStorage.setItem('pageLang', lang);
     this.keyBase = language[lang];
+
     //Create main Elements
-    const main = document.createElement('div');
-    const keysContainer = document.createElement('div');
+    this.main = document.createElement('div');
+    this.keysContainer = document.createElement('div');
 
     //Setup main elements
-    main.classList.add('keyboard');
-    keysContainer.classList.add('keyboard-keys');
-    keysContainer.dataset.language = lang;
-    keysContainer.appendChild(this.generateButtons());
-
-    const keys = keysContainer.querySelectorAll('.keyboard-key');
+    this.main.classList.add('keyboard');
+    this.keysContainer.classList.add('keyboard-keys');
+    this.keysContainer.dataset.language = lang;
+    this.keysContainer.appendChild(this.generateButtons());
 
     //Add to DOM
-    const mainTextDescription = createMainText();
-    document.body.prepend(mainTextDescription);
-    main.appendChild(keysContainer);
-    document.body.append(main);
+    this.mainTextDescription = createMainText();
+    document.body.prepend(this.mainTextDescription);
+    this.main.appendChild(this.keysContainer);
+    document.body.append(this.main);
 
-    //Add event listener and show symbols
-    const textareaInput = mainTextDescription.querySelector('.textarea');
+    //Add event listener on click and push botton
+    this.textareaInput = this.mainTextDescription.querySelector('.textarea');
+    this.getPushButton();
+    this.clickListener();
 
-    keysContainer.addEventListener('click', e => {
-      let target = e.target.closest('.keyboard-key');
-
-      if (target) {
-        //символьно-буквенный ввод
-        if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
-          target.dataset.value.match(/[- + = \\ . /]/)) &&
-          target.dataset.value.length === 1) {
-
-          textareaInput.focus();
-
-          if (this.isCapsLock) {
-            textareaInput.value += target.dataset.value.toUpperCase();
-          } else {
-            textareaInput.value += target.dataset.value;
-          }
-        }
-
-        //нажатие на caps lock
-        if (target.dataset.value === 'CapsLock') {
-          if (this.isCapsLock) {
-            this.isCapsLock = false;
-          } else {
-            this.isCapsLock = true;
-          }
-
-          this.switchCapsLock(keys);
-          target.classList.toggle('keyboard-key-active');
-        }
-
-        const regexp = /Delete|Backspace|Enter|ArrowLeft|ArrowUp|ArrowDown|ArrowRight|Tab/i;
-
-        if (target.dataset.value.match(regexp)) {
-          this.changeCursorPosition(textareaInput, target.dataset.value);
-        }
-      }
-    })
-
-    this.getPushButton(textareaInput, keysContainer);
+    if (isCaps === 'on') {
+      this.isCapsLock = 'on';
+      this.switchCapsLock();
+    }
   }
 
-  changeCursorPosition(area, command) {
-    let cursorPos = area.selectionStart;
+  changeCursorPosition(command) {
+    let cursorPos = this.textareaInput.selectionStart;
 
     if (command === 'Delete') {
-      const left = area.value.slice(0, cursorPos);
-      const right = area.value.slice(cursorPos + 1);
-      area.value = `${left}${right}`;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      const left = this.textareaInput.value.slice(0, cursorPos);
+      const right = this.textareaInput.value.slice(cursorPos + 1);
+      this.textareaInput.value = `${left}${right}`;
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
       cursorPos++;
     }
 
     if (command === 'Backspace') {
-      const left = area.value.slice(0, cursorPos - 1);
-      const right = area.value.slice(cursorPos);
-      area.value = `${left}${right}`;
+      const left = this.textareaInput.value.slice(0, cursorPos - 1);
+      const right = this.textareaInput.value.slice(cursorPos);
+      this.textareaInput.value = `${left}${right}`;
       cursorPos--;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
+    }
+
+    if (command === 'Space') {
+      const left = this.textareaInput.value.slice(0, cursorPos);
+      const right = this.textareaInput.value.slice(cursorPos);
+      this.textareaInput.value = `${left} ${right}`;
+      cursorPos++;
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'Enter') {
-      const left = area.value.slice(0, cursorPos);
-      const right = area.value.slice(cursorPos);
-      area.value = `${left}\n${right}`;
+      const left = this.textareaInput.value.slice(0, cursorPos);
+      const right = this.textareaInput.value.slice(cursorPos);
+      this.textareaInput.value = `${left}\n${right}`;
       cursorPos++;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'Tab') {
-      const left = area.value.slice(0, cursorPos);
-      const right = area.value.slice(cursorPos);
-      area.value = `${left}\t${right}`;
+      const left = this.textareaInput.value.slice(0, cursorPos);
+      const right = this.textareaInput.value.slice(cursorPos);
+      this.textareaInput.value = `${left}\t${right}`;
       cursorPos++;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'ArrowLeft') {
       cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'ArrowRight') {
       cursorPos++;
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'ArrowUp') {
-      const left = area.value.slice(0, cursorPos);
+      const left = this.textareaInput.value.slice(0, cursorPos);
 
       if (left.match(/(\n).*$(?!\1)/g)) {
         const strFromLeft = left.match(/(\n).*$(?!\1)/g);
         cursorPos -= strFromLeft[0].length;
       }
 
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
 
     if (command === 'ArrowDown') {
-      const right = area.value.slice(cursorPos);
+      const right = this.textareaInput.value.slice(cursorPos);
 
       if (right.match(/(\n).*$(?!\1)/g)) {
         const strFromRight = right.match(/^.*(\n).*(?!\1)/);
         cursorPos += strFromRight[0].length + 1;
       }
 
-      area.selectionStart = area.selectionEnd = cursorPos;
-      area.focus();
+      this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+      this.textareaInput.focus();
     }
   }
 
-  switchCapsLock(buttonsArr) {
-    if (this.isCapsLock === true) {
-      buttonsArr.forEach(btn => {
+  switchCapsLock() {
+    const keys = this.keysContainer.querySelectorAll('.keyboard-key');
+
+    if (localStorage.getItem('isCapsLock') === 'on') {
+      this.isCapsLock === 'on';
+      keys.forEach(btn => {
         if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
           btn.dataset.value.length === 1) {
           let buttonValue = btn.querySelector('.text');
@@ -180,7 +157,8 @@ class Keyboard {
         }
       })
     } else {
-      buttonsArr.forEach(btn => {
+      this.isCapsLock === 'off';
+      keys.forEach(btn => {
         if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
           btn.dataset.value.length === 1) {
           let buttonValue = btn.querySelector('.text');
@@ -196,18 +174,14 @@ class Keyboard {
     const fragment = document.createDocumentFragment();
     this.keyButtons = [];
 
-    if (!this.buttons.length) {
-      throw Error('Ooops, check input buttons!')
-    }
+    if (!this.buttons.length) throw Error('Ooops, check input buttons!');
 
     this.buttons.forEach((row) => {
-      //создаем строку клавиатуры
       const rowElement = document.createElement('div');
       rowElement.classList.add('keyboard-row');
       rowElement.style.gridTemplateColumns = `repeat(${row.length}, 1fr)`;
 
       row.forEach(code => {
-        //в пришедшей раскладке пройтись по всем ключам и сопоставить ключи массива и ключи расскладки
         const keyObj = this.keyBase.find(key => key.code === code);
 
         if (keyObj) {
@@ -218,28 +192,71 @@ class Keyboard {
 
       fragment.appendChild(rowElement);
     })
-
     return fragment;
   }
 
-  changeLanguage(container) {
+  changeLanguage() {
+    this.keysContainer.textContent = '';
 
-    if (container.dataset.language === 'ru') {
-      console.log('поменяли на анг');
-      container.textContent = ''; //очищаем поле клавиатуры
-      container.dataset.language = 'en'; //меняем индикатор языка
-      container.appendChild(this.generateButtons(language[container.dataset.language])); //перезаписываем кнопки
-      //фиксируем в локал
+    if (this.keysContainer.dataset.language === 'ru') {
+      this.keysContainer.dataset.language = 'en';
+      this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
+      localStorage.setItem('pageLang', this.keysContainer.dataset.language);
+      this.clickListener();
+      this.switchCapsLock();
+      this.getPushButton();
     } else {
-      container.textContent = ''; //очищаем поле клавиатуры
-      container.dataset.language = 'ru'; //меняем индикатор языка
-      container.appendChild(this.generateButtons(language[container.dataset.language])); //перезаписываем кнопки
-      //фиксируем в локал
+      this.keysContainer.dataset.language = 'ru';
+      this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
+      localStorage.setItem('pageLang', this.keysContainer.dataset.language);
+      this.clickListener();
+      this.switchCapsLock();
+      this.getPushButton();
     }
   }
 
-  getPushButton(area, buttonContainer) {
-    const buttons = buttonContainer.querySelectorAll('.keyboard-key');
+  clickListener() {
+    this.keysContainer.addEventListener('click', e => {
+      let target = e.target.closest('.keyboard-key');
+
+      if (target) {
+        if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
+          target.dataset.value.match(/[- + = \\ . /]/)) &&
+          target.dataset.value.length === 1) {
+
+          this.textareaInput.focus();
+
+          if (this.isCapsLock === 'on') {
+            this.textareaInput.value += target.dataset.value.toUpperCase();
+          } else {
+            this.textareaInput.value += target.dataset.value;
+          }
+        }
+
+        if (target.dataset.value === 'CapsLock') {
+          if (this.isCapsLock === 'on') {
+            this.isCapsLock = 'off';
+            localStorage.setItem('isCapsLock', this.isCapsLock);
+          } else {
+            this.isCapsLock = 'on';
+            localStorage.setItem('isCapsLock', this.isCapsLock);
+          }
+
+          this.switchCapsLock();
+          target.classList.toggle('keyboard-key-active');
+        }
+
+        const regexp = /Delete|Backspace|Enter|ArrowLeft|ArrowUp|ArrowDown|ArrowRight|Tab|Space|[a-zA-Zа-яА-Я0-9]/i;
+
+        if (target.dataset.value.match(regexp)) {
+          this.changeCursorPosition(target.dataset.value);
+        }
+      }
+    })
+  }
+
+  getPushButton() {
+    const buttons = this.keysContainer.querySelectorAll('.keyboard-key');
 
     const deleteActiveClass = () => {
       buttons.forEach(btn => {
@@ -248,7 +265,7 @@ class Keyboard {
     };
 
     document.addEventListener('keydown', e => {
-      area.focus();
+      this.textareaInput.focus();
 
       buttons.forEach(btn => {
         if (btn.dataset.code === e.code) {
@@ -256,29 +273,29 @@ class Keyboard {
           setTimeout(deleteActiveClass, 500);
 
           if (e.code === 'ShiftLeft') {
-            console.log('нажали левый Shift');
             this.isShiftLeft = true;
           }
 
           if (e.code === 'AltLeft' && this.isShiftLeft) {
-            console.log('комбинация смены языка');
-            this.changeLanguage(buttonContainer);
+            this.changeLanguage();
             this.isShiftLeft = false;
           }
 
           if (e.code === 'Tab') {
             e.preventDefault();
-            this.changeCursorPosition(area, e.code);
+            this.changeCursorPosition(e.code);
           }
 
           if (e.code === 'CapsLock') {
-            if (this.isCapsLock) {
-              this.isCapsLock = false;
+            if (this.isCapsLock === 'on') {
+              this.isCapsLock = 'off';
+              localStorage.setItem('isCapsLock', this.isCapsLock);
             } else {
-              this.isCapsLock = true;
+              this.isCapsLock = 'on';
+              localStorage.setItem('isCapsLock', this.isCapsLock);
             }
 
-            this.switchCapsLock(buttons);
+            this.switchCapsLock();
             btn.classList.toggle('keyboard-key-active');
           }
         }

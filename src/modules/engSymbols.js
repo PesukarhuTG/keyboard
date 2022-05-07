@@ -348,7 +348,7 @@ const en = [
     keycode: '18',
   },
   {
-    small: ' ',
+    small: 'Space',
     shift: null,
     code: 'Space',
     keycode: '32',
