@@ -203,14 +203,12 @@ class Keyboard {
       this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.clickListener();
-      //this.switchCapsLock();
       this.getPushButton();
     } else {
       this.keysContainer.dataset.language = 'ru';
       this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.clickListener();
-      //this.switchCapsLock();
       this.getPushButton();
     }
   }
@@ -219,24 +217,26 @@ class Keyboard {
     this.keysContainer.addEventListener('click', e => {
       e.stopImmediatePropagation();
 
-      let target = e.target.closest('.keyboard-key');
+      const target = e.target.closest('.keyboard-key');
+      if (!target) return;
+      const { dataset: { value } } = e.target.closest('.keyboard-key');
 
       if (target) {
-        if ((target.dataset.value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
-          target.dataset.value.match(/[- + `' < = \\ . , ; /]/) ||
-          target.dataset.value === '[' || target.dataset.value === ']') &&
-          target.dataset.value.length === 1) {
+        if ((value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) ||
+          value.match(/[- + `' < = \\ . , ; /]/) ||
+          value === '[' || value === ']') &&
+          value.length === 1) {
 
           this.textareaInput.focus();
 
           if (this.isCapsLock === 'on') {
-            this.textareaInput.value += target.dataset.value.toUpperCase();
+            this.textareaInput.value += value.toUpperCase();
           } else {
-            this.textareaInput.value += target.dataset.value;
+            this.textareaInput.value += value;
           }
         }
 
-        if (target.dataset.value === 'CapsLock') {
+        if (value === 'CapsLock') {
           if (this.isCapsLock === 'on') {
             this.isCapsLock = 'off';
             localStorage.setItem('isCapsLock', this.isCapsLock);
@@ -251,8 +251,8 @@ class Keyboard {
 
         const regexp = /Delete|Backspace|Enter|ArrowLeft|ArrowUp|ArrowDown|ArrowRight|Tab|Space|[a-zA-Zа-яА-Я0-9]/i;
 
-        if (target.dataset.value.match(regexp)) {
-          this.changeCursorPosition(target.dataset.value);
+        if (value.match(regexp)) {
+          this.changeCursorPosition(value);
         }
       }
     })
