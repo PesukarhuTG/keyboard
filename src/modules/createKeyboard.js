@@ -1,5 +1,4 @@
-//import rusSymbols from './rusSymbols.js';
-import engSymbols from './engSymbols.js';
+import language from './language.js';
 import Key from './Key.js';
 
 const createMainText = () => {
@@ -10,7 +9,7 @@ const createMainText = () => {
 
   const p = document.createElement('p');
   p.innerHTML = `Virtual keyboard has been made under Window.<br>
-  Use left <kbd>Ctrl</kbd> + <kbd>Alt</kbd> to switch language`;
+  Use <kbd>ShiftLeft</kbd> + <kbd>AltLeft</kbd> to switch language`;
 
   const textareaOutput = document.createElement('textarea');
   textareaOutput.classList.add('textarea');
@@ -25,12 +24,14 @@ const createMainText = () => {
 class Keyboard {
   constructor(buttons) {
     this.buttons = buttons,
-      this.isCapsLock = false
+      this.isCapsLock = false,
+      this.isShiftLeft = false
   }
 
   //firstPageLoad
-  init() {
-    this.keyBase = engSymbols;
+  init(lang) {
+    localStorage.setItem('pageLang', lang);
+    this.keyBase = language[lang];
     //Create main Elements
     const main = document.createElement('div');
     const keysContainer = document.createElement('div');
@@ -38,6 +39,7 @@ class Keyboard {
     //Setup main elements
     main.classList.add('keyboard');
     keysContainer.classList.add('keyboard-keys');
+    keysContainer.dataset.language = lang;
     keysContainer.appendChild(this.generateButtons());
 
     const keys = keysContainer.querySelectorAll('.keyboard-key');
@@ -188,7 +190,9 @@ class Keyboard {
     }
   }
 
-  generateButtons() {
+  generateButtons(langValue) {
+    this.keyBase = langValue ? langValue : this.keyBase;
+
     const fragment = document.createDocumentFragment();
     this.keyButtons = [];
 
@@ -218,7 +222,21 @@ class Keyboard {
     return fragment;
   }
 
-  // =======================================================================================================
+  changeLanguage(container) {
+
+    if (container.dataset.language === 'ru') {
+      console.log('поменяли на анг');
+      container.textContent = ''; //очищаем поле клавиатуры
+      container.dataset.language = 'en'; //меняем индикатор языка
+      container.appendChild(this.generateButtons(language[container.dataset.language])); //перезаписываем кнопки
+      //фиксируем в локал
+    } else {
+      container.textContent = ''; //очищаем поле клавиатуры
+      container.dataset.language = 'ru'; //меняем индикатор языка
+      container.appendChild(this.generateButtons(language[container.dataset.language])); //перезаписываем кнопки
+      //фиксируем в локал
+    }
+  }
 
   getPushButton(area, buttonContainer) {
     const buttons = buttonContainer.querySelectorAll('.keyboard-key');
@@ -236,8 +254,35 @@ class Keyboard {
         if (btn.dataset.code === e.code) {
           btn.classList.add('keyboard-btn-active');
           setTimeout(deleteActiveClass, 500);
+
+          if (e.code === 'ShiftLeft') {
+            console.log('нажали левый Shift');
+            this.isShiftLeft = true;
+          }
+
+          if (e.code === 'AltLeft' && this.isShiftLeft) {
+            console.log('комбинация смены языка');
+            this.changeLanguage(buttonContainer);
+            this.isShiftLeft = false;
+          }
+
+          if (e.code === 'Tab') {
+            e.preventDefault();
+            this.changeCursorPosition(area, e.code);
+          }
+
+          if (e.code === 'CapsLock') {
+            if (this.isCapsLock) {
+              this.isCapsLock = false;
+            } else {
+              this.isCapsLock = true;
+            }
+
+            this.switchCapsLock(buttons);
+            btn.classList.toggle('keyboard-key-active');
+          }
         }
-      })
+      });
     })
   }
 }

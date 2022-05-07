@@ -1,4 +1,4 @@
-const engSymbols = [
+const en = [
   {
     small: '`',
     shift: '~',
@@ -391,4 +391,4 @@ const engSymbols = [
   },
 ];
 
-export default engSymbols;
+export default en;

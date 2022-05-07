@@ -1,4 +1,4 @@
-const rusSymbols = [
+const ru = [
   {
     small: 'CapsLock',
     shift: null,
@@ -391,4 +391,4 @@ const rusSymbols = [
   },
 ];
 
-export default rusSymbols;
+export default ru;

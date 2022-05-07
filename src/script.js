@@ -9,5 +9,7 @@ const buttons = [
   ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'],
 ];
 
+const lang = localStorage.getItem('pageLang') ? localStorage.getItem('pageLang') : 'ru';
+
 const keyboard = new Keyboard(buttons);
-keyboard.init();
+keyboard.init(lang);
