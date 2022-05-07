@@ -203,20 +203,22 @@ class Keyboard {
       this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.clickListener();
-      this.switchCapsLock();
+      //this.switchCapsLock();
       this.getPushButton();
     } else {
       this.keysContainer.dataset.language = 'ru';
       this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.clickListener();
-      this.switchCapsLock();
+      //this.switchCapsLock();
       this.getPushButton();
     }
   }
 
   clickListener() {
     this.keysContainer.addEventListener('click', e => {
+      e.stopImmediatePropagation();
+
       let target = e.target.closest('.keyboard-key');
 
       if (target) {
