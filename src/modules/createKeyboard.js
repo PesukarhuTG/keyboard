@@ -32,23 +32,19 @@ class Keyboard {
     localStorage.setItem('pageLang', lang);
     this.keyBase = language[lang];
 
-    //Create main Elements
     this.main = document.createElement('div');
     this.keysContainer = document.createElement('div');
 
-    //Setup main elements
     this.main.classList.add('keyboard');
     this.keysContainer.classList.add('keyboard-keys');
     this.keysContainer.dataset.language = lang;
     this.keysContainer.appendChild(this.generateButtons());
 
-    //Add to DOM
     this.mainTextDescription = createMainText();
     document.body.prepend(this.mainTextDescription);
     this.main.appendChild(this.keysContainer);
     document.body.append(this.main);
 
-    //Add event listener on click and push botton
     this.textareaInput = this.mainTextDescription.querySelector('.textarea');
     this.getPushButton();
     this.clickListener();
@@ -269,7 +265,6 @@ class Keyboard {
     };
 
     const listenerKeyDown = (e) => {
-      //e.stopImmediatePropagation();
       this.textareaInput.focus();
 
       buttons.forEach(btn => {
@@ -279,21 +274,6 @@ class Keyboard {
 
           if (e.code === 'ShiftLeft') {
             this.isShiftLeft = true;
-
-            /*buttons.forEach(btn => {
-              let childSubtitle = btn.querySelector('.subtitle');
-              let childText = btn.querySelector('.text');
-              let shiftText = btn.dataset.shift;
-              let mainText = btn.dataset.value;
-              if (childSubtitle) childSubtitle.style.opacity = '0';
-              if (childText) {
-                if (shiftText !== 'null') {
-                  childText.textContent = shiftText ? shiftText : mainText.toUpperCase();
-                }
-              }
-              this.clickListener();
-              this.getPushButton();
-            })*/
           }
 
           if (e.code === 'AltLeft' && this.isShiftLeft) {
@@ -328,28 +308,6 @@ class Keyboard {
 
 
     document.addEventListener('keydown', listenerKeyDown);
-
-    /*document.addEventListener('keyup', e => {
-      e.stopImmediatePropagation();
-      if (e.code === 'ShiftLeft') {
-        this.isShiftLeft = false;
-        buttons.forEach(btn => {
-          let childSubtitle = btn.querySelector('.subtitle');
-          let childText = btn.querySelector('.text');
-          let mainText = btn.dataset.value;
-          if (childSubtitle) childSubtitle.style.opacity = '';
-          if (childText) {
-            if (this.isCapsLock === 'on' && mainText.length === 1) {
-              childText.textContent = mainText.toUpperCase();
-            } else {
-              childText.textContent = mainText;
-            }
-          }
-          this.clickListener();
-          this.getPushButton();
-        })
-      }
-    });*/
   }
 }
 
