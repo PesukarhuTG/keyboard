@@ -275,7 +275,7 @@ class Keyboard {
       buttons.forEach(btn => {
         if (btn.dataset.code === e.code) {
           btn.classList.add('keyboard-btn-active');
-          setTimeout(deleteActiveClass, 500);
+          setTimeout(deleteActiveClass, 400);
 
           if (e.code === 'ShiftLeft') {
             this.isShiftLeft = true;
@@ -285,7 +285,6 @@ class Keyboard {
               let childText = btn.querySelector('.text');
               let shiftText = btn.dataset.shift;
               let mainText = btn.dataset.value;
-
               if (childSubtitle) childSubtitle.style.opacity = '0';
               if (childText) {
                 if (shiftText !== 'null') {
@@ -334,22 +333,18 @@ class Keyboard {
       e.stopImmediatePropagation();
       if (e.code === 'ShiftLeft') {
         this.isShiftLeft = false;
-
         buttons.forEach(btn => {
           let childSubtitle = btn.querySelector('.subtitle');
           let childText = btn.querySelector('.text');
           let mainText = btn.dataset.value;
-
           if (childSubtitle) childSubtitle.style.opacity = '';
           if (childText) {
             if (this.isCapsLock === 'on' && mainText.length === 1) {
-
               childText.textContent = mainText.toUpperCase();
             } else {
               childText.textContent = mainText;
             }
           }
-
           this.clickListener();
           this.getPushButton();
         })
