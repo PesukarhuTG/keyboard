@@ -31,6 +31,7 @@ class Key {
     if (this.small) {
       keyElement.dataset.value = this.small;
       keyElement.dataset.code = this.code;
+      keyElement.dataset.shift = this.shift;
       const mainSymbol = document.createElement('div');
       mainSymbol.classList.add('text');
       mainSymbol.textContent = this.small;

@@ -58,8 +58,11 @@ class Keyboard {
     const keys = this.keysContainer.querySelectorAll('.keyboard-key');
     const capsButton = this.keysContainer.querySelector('[data-code="CapsLock"]');
 
+    console.log('2 отрисовка: ', this.isCapsLock);
+
     if (this.isCapsLock === 'on') {
       capsButton.classList.add('keyboard-key-active');
+
       keys.forEach(btn => {
         if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
           btn.dataset.value.length === 1) {
@@ -71,6 +74,7 @@ class Keyboard {
 
     if (this.isCapsLock === 'off') {
       capsButton.classList.remove('keyboard-key-active');
+
       keys.forEach(btn => {
         if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
           btn.dataset.value.length === 1) {
@@ -109,6 +113,7 @@ class Keyboard {
   }
 
   changeLanguage() {
+
     this.keysContainer.textContent = '';
 
     if (this.keysContainer.dataset.language === 'ru') {
@@ -117,15 +122,16 @@ class Keyboard {
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.switchCapsLock();
       this.clickListener();
-      this.getPushButton();
-    } else {
+
+    } else if (this.keysContainer.dataset.language === 'en') {
       this.keysContainer.dataset.language = 'ru';
       this.keysContainer.appendChild(this.generateButtons(language[this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.switchCapsLock();
       this.clickListener();
-      this.getPushButton();
     }
+
+    this.getPushButton();
   }
 
   clickListener() {
@@ -144,9 +150,13 @@ class Keyboard {
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos);
 
-          if (this.isCapsLock === 'on') {
+          if (this.isCapsLock === 'on' && this.isShiftLeft === true) {
+            this.textareaInput.value = `${left}${target.dataset.shift}${right}`;
+          } else if (this.isCapsLock === 'on' && this.isShiftLeft === false) {
             this.textareaInput.value = `${left}${value.toUpperCase()}${right}`;
-          } else if (this.isCapsLock === 'off') {
+          } else if (this.isCapsLock === 'off' && this.isShiftLeft === true) {
+            this.textareaInput.value = `${left}${target.dataset.shift}${right}`;
+          } else if (this.isCapsLock === 'off' && this.isShiftLeft === false) {
             this.textareaInput.value = `${left}${value.toLowerCase()}${right}`;
           }
 
@@ -158,11 +168,11 @@ class Keyboard {
         if (value === 'CapsLock') {
           if (this.isCapsLock === 'on') {
             this.isCapsLock = 'off';
-            this.switchCapsLock();
           } else if (this.isCapsLock === 'off') {
             this.isCapsLock = 'on';
-            this.switchCapsLock();
           }
+
+          this.switchCapsLock();
         }
 
         if (value === 'Delete') {
@@ -258,8 +268,8 @@ class Keyboard {
       });
     };
 
-    document.addEventListener('keydown', e => {
-      e.stopImmediatePropagation();
+    const listenerKeyDown = (e) => {
+      //e.stopImmediatePropagation();
       this.textareaInput.focus();
 
       buttons.forEach(btn => {
@@ -269,9 +279,26 @@ class Keyboard {
 
           if (e.code === 'ShiftLeft') {
             this.isShiftLeft = true;
+
+            /*buttons.forEach(btn => {
+              let childSubtitle = btn.querySelector('.subtitle');
+              let childText = btn.querySelector('.text');
+              let shiftText = btn.dataset.shift;
+              let mainText = btn.dataset.value;
+
+              if (childSubtitle) childSubtitle.style.opacity = '0';
+              if (childText) {
+                if (shiftText !== 'null') {
+                  childText.textContent = shiftText ? shiftText : mainText.toUpperCase();
+                }
+              }
+              this.clickListener();
+              this.getPushButton();
+            })*/
           }
 
           if (e.code === 'AltLeft' && this.isShiftLeft) {
+            document.removeEventListener('keydown', listenerKeyDown);
             this.changeLanguage();
             this.isShiftLeft = false;
           }
@@ -285,21 +312,49 @@ class Keyboard {
             cursorPos++;
             this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
             this.textareaInput.focus();
-
           }
 
           if (e.code === 'CapsLock') {
             if (this.isCapsLock === 'on') {
               this.isCapsLock = 'off';
-              this.switchCapsLock();
             } else if (this.isCapsLock === 'off') {
               this.isCapsLock = 'on';
-              this.switchCapsLock();
             }
+
+            this.switchCapsLock();
           }
         }
       });
-    })
+    };
+
+
+    document.addEventListener('keydown', listenerKeyDown);
+
+    /*document.addEventListener('keyup', e => {
+      e.stopImmediatePropagation();
+      if (e.code === 'ShiftLeft') {
+        this.isShiftLeft = false;
+
+        buttons.forEach(btn => {
+          let childSubtitle = btn.querySelector('.subtitle');
+          let childText = btn.querySelector('.text');
+          let mainText = btn.dataset.value;
+
+          if (childSubtitle) childSubtitle.style.opacity = '';
+          if (childText) {
+            if (this.isCapsLock === 'on' && mainText.length === 1) {
+
+              childText.textContent = mainText.toUpperCase();
+            } else {
+              childText.textContent = mainText;
+            }
+          }
+
+          this.clickListener();
+          this.getPushButton();
+        })
+      }
+    });*/
   }
 }
 
