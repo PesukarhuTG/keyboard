@@ -10,7 +10,6 @@ const buttons = [
 ];
 
 const lang = localStorage.getItem('pageLang') ? localStorage.getItem('pageLang') : 'ru';
-const caps = localStorage.getItem('isCapsLock') ? localStorage.getItem('isCapsLock') : 'off';
 
 const keyboard = new Keyboard(buttons);
-keyboard.init(lang, caps);
+keyboard.init(lang);

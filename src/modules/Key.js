@@ -53,9 +53,6 @@ class Key {
         break;
       case 'CapsLock':
         keyElement.classList.add('keyboard-key-middle-wide', 'keyboard-key-activatable');
-        if (localStorage.getItem('isCapsLock') === 'on') {
-          keyElement.classList.add('keyboard-key-active');
-        }
         break;
       case 'Enter':
         keyElement.classList.add('keyboard-key-middle-wide');
