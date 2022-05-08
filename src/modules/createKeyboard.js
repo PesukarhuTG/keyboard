@@ -54,8 +54,6 @@ class Keyboard {
     const keys = this.keysContainer.querySelectorAll('.keyboard-key');
     const capsButton = this.keysContainer.querySelector('[data-code="CapsLock"]');
 
-    console.log('2 отрисовка: ', this.isCapsLock);
-
     if (this.isCapsLock === 'on') {
       capsButton.classList.add('keyboard-key-active');
 
