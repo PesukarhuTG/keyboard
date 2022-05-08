@@ -18,7 +18,8 @@ module.exports = {
       title: 'Virtual keyboard',
       filename: 'index.html',
       template: 'index.html',
-      minify: false
+      minify: false,
+      favicon: './src/img/favicon.png',
     })],
   module: {
     rules: [
