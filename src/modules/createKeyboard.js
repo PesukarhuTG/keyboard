@@ -9,7 +9,7 @@ const createMainText = () => {
 
   const p = document.createElement('p');
   p.innerHTML = `Virtual keyboard has been made under Window.<br>
-  Use <kbd>ShiftLeft</kbd> + <kbd>AltLeft</kbd> to switch language`;
+  Use <kbd>CtrlLeft</kbd> + <kbd>AltLeft</kbd> to switch language`;
 
   const textareaOutput = document.createElement('textarea');
   textareaOutput.classList.add('textarea');
@@ -25,7 +25,8 @@ class Keyboard {
   constructor(buttons) {
     this.buttons = buttons,
       this.isCapsLock = 'off',
-      this.isShiftLeft = false
+      this.isShiftLeft = false,
+      this.isCtrl = false
   }
 
   init(lang) {
@@ -270,14 +271,44 @@ class Keyboard {
           btn.classList.add('keyboard-btn-active');
           setTimeout(deleteActiveClass, 400);
 
-          if (e.code === 'ShiftLeft') {
+          if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
             this.isShiftLeft = true;
+
+            buttons.forEach(elem => {
+              let childSubtitle = elem.querySelector('.subtitle');
+
+              if (childSubtitle) {
+                childSubtitle.style.fontSize = '18px';
+                childSubtitle.style.fontWeight = '700';
+                childSubtitle.style.color = '#06f7e4';
+              }
+            })
+
+            const changeStatus = () => {
+              this.isShiftLeft = false;
+
+              buttons.forEach(elem => {
+                let childSubtitle = elem.querySelector('.subtitle');
+
+                if (childSubtitle) {
+                  childSubtitle.style.fontSize = '12px';
+                  childSubtitle.style.fontWeight = '400';
+                  childSubtitle.style.color = 'rgba(255,255,255,0.5)';
+                }
+              })
+            }
+
+            setTimeout(changeStatus, 1000);
           }
 
-          if (e.code === 'AltLeft' && this.isShiftLeft) {
+          if (e.code === 'ControlLeft') {
+            this.isCtrl = true;
+          }
+
+          if (e.code === 'AltLeft' && this.isCtrl) {
             document.removeEventListener('keydown', listenerKeyDown);
             this.changeLanguage();
-            this.isShiftLeft = false;
+            this.isCtrl = false;
           }
 
           if (e.code === 'Tab') {
