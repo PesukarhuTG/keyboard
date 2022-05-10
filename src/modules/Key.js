@@ -5,8 +5,8 @@ import arrowLeft from '../img/icon-left.png';
 import arrowRight from '../img/icon-right.png';
 
 class Key {
-  //на основании конструктора создаются все объекты-кнопки
-  //массив кнопок передается в Keyboard - там генерируются кнопки
+  // на основании конструктора создаются все объекты-кнопки
+  // массив кнопок передается в Keyboard - там генерируются кнопки
   constructor(options) {
     this.small = options.small;
     this.shift = options.shift;
@@ -19,7 +19,7 @@ class Key {
     keyElement.setAttribute('type', 'button');
     keyElement.classList.add('keyboard-key');
 
-    //если shift существует (верхнее левое значение) и оно содержит символы
+    // если shift существует (верхнее левое значение) и оно содержит символы
     if (this.shift && this.shift.match(/[^a-zA-Zа-яА-ЯёЁ0-9]/g)) {
       const shiftSymbol = document.createElement('div');
       shiftSymbol.classList.add('subtitle');
@@ -27,7 +27,7 @@ class Key {
       keyElement.appendChild(shiftSymbol);
     }
 
-    //если значение кнопки существует (основное)
+    // если значение кнопки существует (основное)
     if (this.small) {
       keyElement.dataset.value = this.small;
       keyElement.dataset.code = this.code;
@@ -101,6 +101,8 @@ class Key {
         keyElement.classList.add('keyboard-key-extra-wide');
         keyElement.textContent = ' ';
         break;
+      default:
+      // do nothing
     }
 
     return keyElement;
