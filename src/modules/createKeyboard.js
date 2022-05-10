@@ -274,9 +274,64 @@ class Keyboard {
       this.textareaInput.focus();
 
       buttons.forEach((btn) => {
-        if (btn.dataset.code === e.code) {
+        e.preventDefault();
+        const codeVirtBtn = btn.dataset.code;
+
+        if (codeVirtBtn === e.code) {
           btn.classList.add('keyboard-btn-active');
           setTimeout(deleteActiveClass, 400);
+
+          let cursorPos = this.textareaInput.selectionStart;
+
+          if (btn.dataset.value.length === 1) {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+
+            if (this.isCapsLock === 'on' && this.isShiftLeft === true) {
+              this.textareaInput.value = `${left}${btn.dataset.shift}${right}`;
+            } else if (this.isCapsLock === 'on' && this.isShiftLeft === false) {
+              this.textareaInput.value = `${left}${btn.dataset.value.toUpperCase()}${right}`;
+            } else if (this.isCapsLock === 'off' && this.isShiftLeft === true) {
+              this.textareaInput.value = `${left}${btn.dataset.shift}${right}`;
+            } else if (this.isCapsLock === 'off' && this.isShiftLeft === false) {
+              this.textareaInput.value = `${left}${btn.dataset.value.toLowerCase()}${right}`;
+            }
+
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'Delete') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos + 1);
+            this.textareaInput.value = `${left}${right}`;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+            cursorPos += 1;
+          }
+
+          if (e.code === 'Backspace') {
+            const left = this.textareaInput.value.slice(0, cursorPos - 1);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left}${right}`;
+            cursorPos -= 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'Enter') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left}\n${right}`;
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
 
           if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
             this.isShiftLeft = true;
@@ -308,7 +363,7 @@ class Keyboard {
             setTimeout(changeStatus, 1000);
           }
 
-          if (e.code === 'ControlLeft') {
+          if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
             this.isCtrl = true;
           }
 
@@ -318,9 +373,47 @@ class Keyboard {
             this.isCtrl = false;
           }
 
+          if (e.code === 'ArrowLeft') {
+            cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowRight') {
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowUp') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+
+            if (left.match(/(\n).*$(?!\1)/g)) {
+              const strFromLeft = left.match(/(\n).*$(?!\1)/g);
+              cursorPos -= strFromLeft[0].length;
+            }
+
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowDown') {
+            const right = this.textareaInput.value.slice(cursorPos);
+
+            if (right.match(/(\n).*$(?!\1)/g)) {
+              const strFromRight = right.match(/^.*(\n).*(?!\1)/);
+              cursorPos += strFromRight[0].length + 1;
+            }
+
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
           if (e.code === 'Tab') {
-            e.preventDefault();
-            let cursorPos = this.textareaInput.selectionStart;
             const left = this.textareaInput.value.slice(0, cursorPos);
             const right = this.textareaInput.value.slice(cursorPos);
             this.textareaInput.value = `${left}\t${right}`;
@@ -338,6 +431,16 @@ class Keyboard {
             }
 
             this.switchCapsLock();
+          }
+
+          if (e.code === 'Space') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left} ${right}`;
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
           }
         }
       });
