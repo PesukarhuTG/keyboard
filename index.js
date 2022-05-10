@@ -552,8 +552,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Key {
-  //на основании конструктора создаются все объекты-кнопки
-  //массив кнопок передается в Keyboard - там генерируются кнопки
+  // на основании конструктора создаются все объекты-кнопки
+  // массив кнопок передается в Keyboard - там генерируются кнопки
   constructor(options) {
     this.small = options.small;
     this.shift = options.shift;
@@ -566,7 +566,7 @@ class Key {
     keyElement.setAttribute('type', 'button');
     keyElement.classList.add('keyboard-key');
 
-    //если shift существует (верхнее левое значение) и оно содержит символы
+    // если shift существует (верхнее левое значение) и оно содержит символы
     if (this.shift && this.shift.match(/[^a-zA-Zа-яА-ЯёЁ0-9]/g)) {
       const shiftSymbol = document.createElement('div');
       shiftSymbol.classList.add('subtitle');
@@ -574,7 +574,7 @@ class Key {
       keyElement.appendChild(shiftSymbol);
     }
 
-    //если значение кнопки существует (основное)
+    // если значение кнопки существует (основное)
     if (this.small) {
       keyElement.dataset.value = this.small;
       keyElement.dataset.code = this.code;
@@ -648,6 +648,8 @@ class Key {
         keyElement.classList.add('keyboard-key-extra-wide');
         keyElement.textContent = ' ';
         break;
+      default:
+      // do nothing
     }
 
     return keyElement;
@@ -655,6 +657,7 @@ class Key {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Key);
+
 
 /***/ }),
 
@@ -668,8 +671,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _language_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./language.js */ "./src/modules/language.js");
-/* harmony import */ var _Key_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Key.js */ "./src/modules/Key.js");
+/* harmony import */ var _language__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./language */ "./src/modules/language.js");
+/* harmony import */ var _Key__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Key */ "./src/modules/Key.js");
 
 
 
@@ -695,15 +698,15 @@ const createMainText = () => {
 
 class Keyboard {
   constructor(buttons) {
-    this.buttons = buttons,
-      this.isCapsLock = 'off',
-      this.isShiftLeft = false,
-      this.isCtrl = false
+    this.buttons = buttons;
+    this.isCapsLock = 'off';
+    this.isShiftLeft = false;
+    this.isCtrl = false;
   }
 
   init(lang) {
     localStorage.setItem('pageLang', lang);
-    this.keyBase = _language_js__WEBPACK_IMPORTED_MODULE_0__["default"][lang];
+    this.keyBase = _language__WEBPACK_IMPORTED_MODULE_0__["default"][lang];
 
     this.main = document.createElement('div');
     this.keysContainer = document.createElement('div');
@@ -730,30 +733,30 @@ class Keyboard {
     if (this.isCapsLock === 'on') {
       capsButton.classList.add('keyboard-key-active');
 
-      keys.forEach(btn => {
-        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
-          btn.dataset.value.length === 1) {
-          let buttonValue = btn.querySelector('.text');
+      keys.forEach((btn) => {
+        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/)
+          && btn.dataset.value.length === 1) {
+          const buttonValue = btn.querySelector('.text');
           buttonValue.textContent = buttonValue.textContent.toUpperCase();
         }
-      })
+      });
     }
 
     if (this.isCapsLock === 'off') {
       capsButton.classList.remove('keyboard-key-active');
 
-      keys.forEach(btn => {
-        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/) &&
-          btn.dataset.value.length === 1) {
-          let buttonValue = btn.querySelector('.text');
+      keys.forEach((btn) => {
+        if (btn.dataset.value.match(/[a-zA-Zа-яА-ЯёЁ]/)
+          && btn.dataset.value.length === 1) {
+          const buttonValue = btn.querySelector('.text');
           buttonValue.textContent = buttonValue.textContent.toLowerCase();
         }
-      })
+      });
     }
   }
 
   generateButtons(langValue) {
-    this.keyBase = langValue ? langValue : this.keyBase;
+    this.keyBase = langValue || this.keyBase;
 
     const fragment = document.createDocumentFragment();
     this.keyButtons = [];
@@ -765,34 +768,32 @@ class Keyboard {
       rowElement.classList.add('keyboard-row');
       rowElement.style.gridTemplateColumns = `repeat(${row.length}, 1fr)`;
 
-      row.forEach(code => {
-        const keyObj = this.keyBase.find(key => key.code === code);
+      row.forEach((code) => {
+        const keyObj = this.keyBase.find((key) => key.code === code);
 
         if (keyObj) {
-          const keyButton = new _Key_js__WEBPACK_IMPORTED_MODULE_1__["default"](keyObj).createButton();
+          const keyButton = new _Key__WEBPACK_IMPORTED_MODULE_1__["default"](keyObj).createButton();
           rowElement.appendChild(keyButton);
         }
       });
 
       fragment.appendChild(rowElement);
-    })
+    });
     return fragment;
   }
 
   changeLanguage() {
-
     this.keysContainer.textContent = '';
 
     if (this.keysContainer.dataset.language === 'ru') {
       this.keysContainer.dataset.language = 'en';
-      this.keysContainer.appendChild(this.generateButtons(_language_js__WEBPACK_IMPORTED_MODULE_0__["default"][this.keysContainer.dataset.language]));
+      this.keysContainer.appendChild(this.generateButtons(_language__WEBPACK_IMPORTED_MODULE_0__["default"][this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.switchCapsLock();
       this.clickListener();
-
     } else if (this.keysContainer.dataset.language === 'en') {
       this.keysContainer.dataset.language = 'ru';
-      this.keysContainer.appendChild(this.generateButtons(_language_js__WEBPACK_IMPORTED_MODULE_0__["default"][this.keysContainer.dataset.language]));
+      this.keysContainer.appendChild(this.generateButtons(_language__WEBPACK_IMPORTED_MODULE_0__["default"][this.keysContainer.dataset.language]));
       localStorage.setItem('pageLang', this.keysContainer.dataset.language);
       this.switchCapsLock();
       this.clickListener();
@@ -802,7 +803,7 @@ class Keyboard {
   }
 
   clickListener() {
-    this.keysContainer.addEventListener('click', e => {
+    this.keysContainer.addEventListener('click', (e) => {
       e.stopImmediatePropagation();
 
       const target = e.target.closest('.keyboard-key');
@@ -813,7 +814,6 @@ class Keyboard {
         let cursorPos = this.textareaInput.selectionStart;
 
         if ((value.match(/[0-9a-zA-Zа-яА-ЯёЁ]/) || value.match(/[- + `' < = \\ . , ; /]/) || value === ']' || value === '[') && value.length === 1) {
-
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos);
 
@@ -827,8 +827,9 @@ class Keyboard {
             this.textareaInput.value = `${left}${value.toLowerCase()}${right}`;
           }
 
-          cursorPos++;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos += 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -846,17 +847,19 @@ class Keyboard {
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos + 1);
           this.textareaInput.value = `${left}${right}`;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
-          cursorPos++;
+          cursorPos += 1;
         }
 
         if (value === 'Backspace') {
           const left = this.textareaInput.value.slice(0, cursorPos - 1);
           const right = this.textareaInput.value.slice(cursorPos);
           this.textareaInput.value = `${left}${right}`;
-          cursorPos--;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos -= 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -864,8 +867,9 @@ class Keyboard {
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos);
           this.textareaInput.value = `${left} ${right}`;
-          cursorPos++;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos += 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -873,8 +877,9 @@ class Keyboard {
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos);
           this.textareaInput.value = `${left}\n${right}`;
-          cursorPos++;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos += 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -882,20 +887,23 @@ class Keyboard {
           const left = this.textareaInput.value.slice(0, cursorPos);
           const right = this.textareaInput.value.slice(cursorPos);
           this.textareaInput.value = `${left}\t${right}`;
-          cursorPos++;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos += 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
         if (value === 'ArrowLeft') {
           cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
         if (value === 'ArrowRight') {
-          cursorPos++;
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          cursorPos += 1;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -907,7 +915,8 @@ class Keyboard {
             cursorPos -= strFromLeft[0].length;
           }
 
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
 
@@ -919,18 +928,19 @@ class Keyboard {
             cursorPos += strFromRight[0].length + 1;
           }
 
-          this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionEnd = cursorPos;
+          this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
           this.textareaInput.focus();
         }
       }
-    })
+    });
   }
 
   getPushButton() {
     const buttons = this.keysContainer.querySelectorAll('.keyboard-key');
 
     const deleteActiveClass = () => {
-      buttons.forEach(btn => {
+      buttons.forEach((btn) => {
         btn.classList.remove('keyboard-btn-active');
       });
     };
@@ -938,42 +948,97 @@ class Keyboard {
     const listenerKeyDown = (e) => {
       this.textareaInput.focus();
 
-      buttons.forEach(btn => {
-        if (btn.dataset.code === e.code) {
+      buttons.forEach((btn) => {
+        e.preventDefault();
+        const codeVirtBtn = btn.dataset.code;
+
+        if (codeVirtBtn === e.code) {
           btn.classList.add('keyboard-btn-active');
           setTimeout(deleteActiveClass, 400);
+
+          let cursorPos = this.textareaInput.selectionStart;
+
+          if (btn.dataset.value.length === 1) {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+
+            if (this.isCapsLock === 'on' && this.isShiftLeft === true) {
+              this.textareaInput.value = `${left}${btn.dataset.shift}${right}`;
+            } else if (this.isCapsLock === 'on' && this.isShiftLeft === false) {
+              this.textareaInput.value = `${left}${btn.dataset.value.toUpperCase()}${right}`;
+            } else if (this.isCapsLock === 'off' && this.isShiftLeft === true) {
+              this.textareaInput.value = `${left}${btn.dataset.shift}${right}`;
+            } else if (this.isCapsLock === 'off' && this.isShiftLeft === false) {
+              this.textareaInput.value = `${left}${btn.dataset.value.toLowerCase()}${right}`;
+            }
+
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'Delete') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos + 1);
+            this.textareaInput.value = `${left}${right}`;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+            cursorPos += 1;
+          }
+
+          if (e.code === 'Backspace') {
+            const left = this.textareaInput.value.slice(0, cursorPos - 1);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left}${right}`;
+            cursorPos -= 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'Enter') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left}\n${right}`;
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
 
           if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
             this.isShiftLeft = true;
 
-            buttons.forEach(elem => {
-              let childSubtitle = elem.querySelector('.subtitle');
+            buttons.forEach((elem) => {
+              const childSubtitle = elem.querySelector('.subtitle');
 
               if (childSubtitle) {
                 childSubtitle.style.fontSize = '18px';
                 childSubtitle.style.fontWeight = '700';
                 childSubtitle.style.color = '#06f7e4';
               }
-            })
+            });
 
             const changeStatus = () => {
               this.isShiftLeft = false;
 
-              buttons.forEach(elem => {
-                let childSubtitle = elem.querySelector('.subtitle');
+              buttons.forEach((elem) => {
+                const childSubtitle = elem.querySelector('.subtitle');
 
                 if (childSubtitle) {
                   childSubtitle.style.fontSize = '12px';
                   childSubtitle.style.fontWeight = '400';
                   childSubtitle.style.color = 'rgba(255,255,255,0.5)';
                 }
-              })
-            }
+              });
+            };
 
             setTimeout(changeStatus, 1000);
           }
 
-          if (e.code === 'ControlLeft') {
+          if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
             this.isCtrl = true;
           }
 
@@ -983,14 +1048,53 @@ class Keyboard {
             this.isCtrl = false;
           }
 
+          if (e.code === 'ArrowLeft') {
+            cursorPos = (cursorPos - 1 >= 0) ? cursorPos - 1 : 0;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowRight') {
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowUp') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+
+            if (left.match(/(\n).*$(?!\1)/g)) {
+              const strFromLeft = left.match(/(\n).*$(?!\1)/g);
+              cursorPos -= strFromLeft[0].length;
+            }
+
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
+          if (e.code === 'ArrowDown') {
+            const right = this.textareaInput.value.slice(cursorPos);
+
+            if (right.match(/(\n).*$(?!\1)/g)) {
+              const strFromRight = right.match(/^.*(\n).*(?!\1)/);
+              cursorPos += strFromRight[0].length + 1;
+            }
+
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
+
           if (e.code === 'Tab') {
-            e.preventDefault();
-            let cursorPos = this.textareaInput.selectionStart;
             const left = this.textareaInput.value.slice(0, cursorPos);
             const right = this.textareaInput.value.slice(cursorPos);
             this.textareaInput.value = `${left}\t${right}`;
-            cursorPos++;
-            this.textareaInput.selectionStart = this.textareaInput.selectionEnd = cursorPos;
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
             this.textareaInput.focus();
           }
 
@@ -1003,16 +1107,26 @@ class Keyboard {
 
             this.switchCapsLock();
           }
+
+          if (e.code === 'Space') {
+            const left = this.textareaInput.value.slice(0, cursorPos);
+            const right = this.textareaInput.value.slice(cursorPos);
+            this.textareaInput.value = `${left} ${right}`;
+            cursorPos += 1;
+            this.textareaInput.selectionEnd = cursorPos;
+            this.textareaInput.selectionStart = this.textareaInput.selectionEnd;
+            this.textareaInput.focus();
+          }
         }
       });
     };
-
 
     document.addEventListener('keydown', listenerKeyDown);
   }
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Keyboard);
+
 
 /***/ }),
 
@@ -1434,12 +1548,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _rusSymbols_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./rusSymbols.js */ "./src/modules/rusSymbols.js");
-/* harmony import */ var _engSymbols_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./engSymbols.js */ "./src/modules/engSymbols.js");
+/* harmony import */ var _rusSymbols__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./rusSymbols */ "./src/modules/rusSymbols.js");
+/* harmony import */ var _engSymbols__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./engSymbols */ "./src/modules/engSymbols.js");
 
 
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ ru: _rusSymbols_js__WEBPACK_IMPORTED_MODULE_0__["default"], en: _engSymbols_js__WEBPACK_IMPORTED_MODULE_1__["default"] });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ ru: _rusSymbols__WEBPACK_IMPORTED_MODULE_0__["default"], en: _engSymbols__WEBPACK_IMPORTED_MODULE_1__["default"] });
+
 
 /***/ }),
 
@@ -2025,6 +2140,7 @@ const lang = localStorage.getItem('pageLang') ? localStorage.getItem('pageLang')
 
 const keyboard = new _modules_createKeyboard__WEBPACK_IMPORTED_MODULE_1__["default"](buttons);
 keyboard.init(lang);
+
 })();
 
 /******/ })()
